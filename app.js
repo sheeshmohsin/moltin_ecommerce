@@ -17,6 +17,10 @@ app.get('/cart', (req, res) => {
     views.getCartItems(req, res);
 });
 
+app.post('/removeItemFromCart', (req, res) => {
+	views.removeItemFromCart(req, res);
+});
+
 app.post('/addtocart', (req, res) => {
 	views.addToCart(req, res);
 });
