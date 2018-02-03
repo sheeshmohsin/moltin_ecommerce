@@ -1,4 +1,4 @@
-const moltin = require('moltin');
+const moltin = require('@moltin/sdk');
 const config = require('./config');
 
 const MoltinAuth = function(req, res, next) {

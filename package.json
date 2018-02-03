@@ -17,8 +17,8 @@
   },
   "homepage": "https://github.com/sheeshmohsin/moltin_ecommerce#readme",
   "dependencies": {
+    "@moltin/sdk": "^3.3.0",
     "body-parser": "^1.18.2",
-    "express": "^4.16.2",
-    "moltin": "^2.2.0"
+    "express": "^4.16.2"
   }
 }

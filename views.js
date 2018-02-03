@@ -10,7 +10,7 @@ const products = function(req, res, next){
 
 const cartItems = function(req, res, next){
     let { Moltin } = req;
-    Moltin.Cart.Items().then((data) => {
+    Moltin.Cart().Items().then((data) => {
         res.send(data);
     });
 };
@@ -21,7 +21,7 @@ const addToCart = function(req, res, next){
         res.status(400).send("Invalid product_id or quantity");
         return
     }
-    Moltin.Cart.AddProduct(req.body.product_id, req.body.quantity).then((data) => {
+    Moltin.Cart().AddProduct(req.body.product_id, req.body.quantity).then((data) => {
         res.send(data);
     });
 }
@@ -41,7 +41,7 @@ const removeItemFromCart = function(req, res, next){
         req.body.quantity = 0
     }
     // RemoveItem not working
-    Moltin.Cart.UpdateItemQuantity(req.body.item_id, req.body.quantity).then((data) => {
+    Moltin.Cart().UpdateItemQuantity(req.body.item_id, req.body.quantity).then((data) => {
         res.send(data);
     })
 }
@@ -81,7 +81,7 @@ const checkout = function(req, res, next){
             'billing_address': billing_address,
             'shipping_address': shipping_address
         }
-        Moltin.Cart.Checkout(body).then((data) => {
+        Moltin.Cart().Checkout(body).then((data) => {
             res.send(data);
         })
     } else {

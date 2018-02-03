@@ -1,5 +1,5 @@
 const app = require('express')();
-const moltin = require('moltin');
+const moltin = require('@moltin/sdk');
 const config = require('./config');
 const middleware = require('./middleware');
 const views = require('./views');
