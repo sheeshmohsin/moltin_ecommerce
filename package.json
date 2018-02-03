@@ -1,0 +1,23 @@
+{
+  "name": "moltin_ecommerce",
+  "version": "1.0.0",
+  "description": "A basic ecommerce app with dummy payment gateway using moltin_ecommerce.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sheeshmohsin/moltin_ecommerce.git"
+  },
+  "author": "Sheesh Mohsin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sheeshmohsin/moltin_ecommerce/issues"
+  },
+  "homepage": "https://github.com/sheeshmohsin/moltin_ecommerce#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "moltin": "^2.2.0"
+  }
+}
