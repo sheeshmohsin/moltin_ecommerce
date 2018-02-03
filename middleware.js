@@ -9,7 +9,6 @@ const MoltinAuth = function(req, res, next) {
     Moltin.Authenticate()
         .then(response => {
             req.Moltin = Moltin;
-            console.log("authenticated", response);
             next();
         });
 
