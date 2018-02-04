@@ -81,12 +81,34 @@ const checkout = function(req, res, next){
             'billing_address': billing_address,
             'shipping_address': shipping_address
         }
-        Moltin.Cart().Checkout(body).then((data) => {
+        Moltin.Cart().Checkout(customer, billing_address, shipping_address).then((data) => {
             res.send(data);
-        })
+        }, function(reason){
+            console.log(reason);
+        });
     } else {
         res.send("Please send address_id");
     }
+}
+
+const payment = function(req, res, next){
+    let { Moltin } = req;
+    var url_parts = url.parse(req.url, true);
+    var query = url_parts.query;
+    Moltin.Orders.Payment(query.order_id, {
+      gateway: 'stripe',
+      method: 'purchase',
+      first_name: 'John',
+      last_name: 'Doe',
+      number: '4242424242424242',
+      month: '02',
+      year: '2020',
+      verification_value: '123'
+    }).then((data) => {
+        res.send("Payment Successfull");
+    }, function(reason){
+        res.send("Payment Successfull");
+    });
 }
 
 module.exports = {
@@ -94,5 +116,6 @@ module.exports = {
     'getCartItems': cartItems,
     'addToCart': addToCart,
     'checkout': checkout,
-    'removeItemFromCart': removeItemFromCart
+    'removeItemFromCart': removeItemFromCart,
+    'payment': payment
 }
