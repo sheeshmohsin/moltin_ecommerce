@@ -1,0 +1,80 @@
+<html>
+<head>
+	<title>Login/Signup</title>
+	<script src="jquery.js"></script>
+</head>
+<body>
+<p id="message"></p>
+<h1>Login</h1>
+<form name="loginForm" id="loginForm">
+	<input type="email" name="email" id="email">
+	<input type="password" name="Password" id="password" />
+	<button id="loginButton">Login</button>
+</form>
+<h1>Sign Up</h1>
+<form name="signupForm" id="signupForm">
+	<input type="text" name="username" id="signupusername">
+	<input type="email" name="email" id="signupemail">
+	<input type="password" name="Password" id="signuppassword" />
+	<button id="signUpButton">Sign Up</button>
+</form>
+<script type="text/javascript">
+var url = "http://127.0.0.1:8000/";
+
+function buildUrl(url, endpoint){
+	return url + endpoint;
+}
+$("#loginButton").click(function(e){
+	var email = $("#email").val();
+	var password = $("#password").val();
+	var postdata = {"email": email, "password": password};
+	console.log(email, password, postdata);
+	var login_url = buildUrl(url, 'login/');
+	console.log("test");
+	$.ajax({
+		url: login_url,
+		type: "POST",
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",
+		data: JSON.stringify(postdata),
+		success: function(data){
+			window.location = '/products.html';
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+			// console.log(textStatus);
+			// console.log(errorThrown);
+			// console.log(XMLHttpRequest);
+			$("#message").html(XMLHttpRequest.responseJSON.message);
+		}
+	});
+	e.preventDefault();
+});
+$("#signUpButton").click(function(e){
+	var username = $("#signupusername").val();
+	var email = $("#signupemail").val();
+	var password = $("#signuppassword").val();
+	var postdata = {"name": username, "email": email, "password": password};
+	console.log(email, password, postdata);
+	var signup_url = buildUrl(url, 'signup/');
+	console.log("test");
+	$.ajax({
+		url: signup_url,
+		type: "POST",
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",
+		data: JSON.stringify(postdata),
+		success: function(data){
+			$("#message").html(data.message);
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+			// console.log(textStatus);
+			// console.log(errorThrown);
+			// console.log(XMLHttpRequest);
+			$("#message").html(XMLHttpRequest.responseJSON.message);
+		}
+	});
+	e.preventDefault();
+});
+</script>
+</body>
+</html>
