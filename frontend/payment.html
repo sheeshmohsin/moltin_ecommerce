@@ -1,0 +1,18 @@
+<html>
+<head>
+	<title>Payment</title>
+	<script src="jquery.js"></script>
+	<script type="text/javascript">
+	if(!localStorage.getItem('email')){
+		window.location = 'index.html';
+	}
+	</script>
+</head>
+<body>
+<p>Hello <span id="user_email"></span>&nbsp;&nbsp;<a href="#" onclick="localStorage.removeItem('email');window.location='index.html'">Logout</a></p>
+<p>Payment Succesfull. Click here to go to <a href="products.html">products</a> page</p>
+</body>
+<script type="text/javascript">
+$("#user_email").html(localStorage.getItem("email"));
+</script>
+</html>

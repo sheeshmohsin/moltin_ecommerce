@@ -4,7 +4,7 @@
 	<script src="jquery.js"></script>
 </head>
 <body>
-<p id="message"></p>
+<p id="message" style="color:red;"></p>
 <h1>Login</h1>
 <form name="loginForm" id="loginForm">
 	<input type="email" name="email" id="email">
@@ -38,6 +38,8 @@ $("#loginButton").click(function(e){
 		contentType: "application/json; charset=utf-8",
 		data: JSON.stringify(postdata),
 		success: function(data){
+			console.log(data);
+			localStorage.setItem("email", email);
 			window.location = '/products.html';
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){

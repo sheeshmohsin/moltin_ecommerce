@@ -1,0 +1,79 @@
+<html>
+<head>
+	<title>Order</title>
+	<script src="jquery.js"></script>
+	<script type="text/javascript">
+	if(!localStorage.getItem('email')){
+		window.location = 'index.html';
+	}
+	</script>
+</head>
+<body>
+<p>Hello <span id="user_email"></span>&nbsp;&nbsp;<a href="#" onclick="localStorage.removeItem('email');window.location='index.html'">Logout</a></p>
+<h2>Order</h2>
+<p>Order ID: <span id="order_id">Loading ...</span></p>
+<p>Order Status: <span id="order_status">Loading ...</span></p>
+<p>Order Payment: <span id="order_payment">Loading ...</span></p>
+<p>Final Price: <span id="final_price">Loading ...</span></p>
+<h3>Your Shipping Address</h3>
+<p>Line 1: <span class="line_1">Loading ...</span></p>
+<p>Line 2: <span class="line_2">Loading ...</span></p>
+<p>PostCode: <span class="postcode">Loading ...</span></p>
+<p>Country: <span class="country">Loading ...</span></p>
+<h3>Your Billing Address</h3>
+<p>Line 1: <span class="line_1">Loading ...</span></p>
+<p>Line 2: <span class="line_2">Loading ...</span></p>
+<p>PostCode: <span class="postcode">Loading ...</span></p>
+<p>Country: <span class="country">Loading ...</span></p>
+<h3> Payment Details</h3>
+<p>Card Number: **** ***** ***** 4242</p>
+<p>Expiry Date: 02/2020</p>
+<p>CVV: 123</p>
+
+
+<button style="background: yellow;" onclick="place_order()">Place Order and Pay</button>
+</body>
+<script type="text/javascript">
+var url = "http://127.0.0.1:8000/";
+var order_id;
+$("#user_email").html(localStorage.getItem("email"));
+
+function buildUrl(url, endpoint){
+	return url + endpoint;
+}
+$(document).ready(function(e){
+	var checkout_url = buildUrl(url, 'checkout/?address_id=0');
+	$.ajax({
+		url: checkout_url,
+		type: "GET",
+		success: function(data){
+			order_id = data.data.id;
+			$("#order_id").html(data.data.id);
+			$("#order_status").html(data.data.status);
+			$("#order_payment").html(data.data.payment);
+			$("#final_price").html(data.data.meta.display_price.with_tax.formatted);
+			$(".line_1").html(data.data.shipping_address.line_1);
+			$(".line_2").html(data.data.shipping_address.line_2);
+			$(".country").html(data.data.shipping_address.county);
+			$(".postcode").html(data.data.shipping_address.postcode);
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+			$("#message").html(XMLHttpRequest.responseJSON.message);
+		}
+	});
+});
+function place_order(){
+	var payment_url = buildUrl(url, 'payment/?order_id=' + String(order_id));
+	$.ajax({
+		url: payment_url,
+		type: "GET",
+		success: function(data){
+			window.location = "payment.html";
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+			window.location = "payment.html";
+		}
+	});
+}
+</script>
+</html>

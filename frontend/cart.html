@@ -1,0 +1,123 @@
+<html>
+<head>
+	<title>Products</title>
+	<script src="jquery.js"></script>
+	<style type="text/css">
+	.hide{
+		display: none;
+	}
+	.product{
+		border: 1px solid black;
+		padding: 10px;
+	}
+	</style>
+	<script type="text/javascript">
+	if(!localStorage.getItem('email')){
+		window.location = 'index.html';
+	}
+	</script>
+</head>
+<body>
+<p>Hello <span id="user_email"></span>&nbsp;&nbsp;<a href="#" onclick="localStorage.removeItem('email');window.location='index.html'">Logout</a></p>
+<h1>Cart</h1>
+<div id="products">
+	<div class="product hide" id="product-sample" data-id="" data-sku="" data-product-id="">
+		<h3 class="name"></h3>
+		<p class="price"></p>
+		<p>Quantity:&nbsp;<input type="number" class="quantity" /></span></p>
+		<p>Total Price:&nbsp;<span class="total_price"></span></p>
+		<button style="background:grey;" class="update_quantity">Update Quantity</button>
+		<button style="background:red;" class="remove_item">Remove</button>
+	</div>
+</div>
+<h3>Total: <span id="total_price">Loading ...</span></h3>
+<button id="checkout" onclick="window.location='checkout.html'">Checkout</button>
+</body>
+<script type="text/javascript">
+var url = "http://127.0.0.1:8000/";
+$("#user_email").html(localStorage.getItem("email"));
+
+function buildUrl(url, endpoint){
+	return url + endpoint;
+}
+
+$(document).ready(function(e){
+	var products_url = buildUrl(url, 'cart/');
+	$.ajax({
+		url: products_url,
+		type: "GET",
+		success: function(data){
+			if (data.data.length == 0){
+				$("#checkout").css("display", "none");
+			}
+			var data_list = data.data;
+			console.log(data_list);
+			for (i=0;i < data_list.length;i++){
+				item = data_list[i];
+				item_name = item.name;
+				item_id = item.id;
+				item_product_id = item.product_id;
+				item_quantity = item.quantity;
+				item_price = item.meta.display_price.with_tax.unit.formatted;
+				item_total_price = item.meta.display_price.with_tax.value.formatted;
+				item_sku = item.sku;
+				item_description = item.description;
+				var product_sample = $("#product-sample").clone();
+				$(product_sample).removeClass('hide');
+				$(product_sample).attr('data-id', item_id);
+				$(product_sample).attr('data-product-id', item_product_id);
+				$(product_sample).attr('data-sku', item_sku);
+				$(product_sample).find(".name").html(item_name);
+				$(product_sample).find(".price").html(item_price);
+				$(product_sample).find(".total_price").html(item_total_price);
+				$(product_sample).find(".quantity").val(item_quantity);
+				$("#products").append(product_sample);
+			}
+			var total_price = data.meta.display_price.with_tax.formatted;
+			$("#total_price").html(total_price);
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+			$("#message").html(XMLHttpRequest.responseJSON.message);
+		}
+	});
+});
+$(document.body).on('click', '.update_quantity', function(){
+	var item_id = $(this).parent().attr('data-id');
+	var quantity = $(this).parent().find('.quantity').val();
+	var removeItemFromCart = buildUrl(url, 'removeItemFromCart/');
+	var postdata = {'item_id': item_id, 'quantity': quantity}
+	$.ajax({
+		url: removeItemFromCart,
+		type: "POST",
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",
+		data: JSON.stringify(postdata),
+		success: function(data){
+			window.location = '/cart.html';
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+			$("#message").html(XMLHttpRequest.responseJSON.message);
+		}
+	})
+});
+$(document.body).on('click', '.remove_item', function(){
+	var item_id = $(this).parent().attr('data-id');
+	var quantity = 0;
+	var removeItemFromCart = buildUrl(url, 'removeItemFromCart/');
+	var postdata = {'item_id': item_id, 'quantity': quantity}
+	$.ajax({
+		url: removeItemFromCart,
+		type: "POST",
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",
+		data: JSON.stringify(postdata),
+		success: function(data){
+			window.location = '/cart.html';
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+			$("#message").html(XMLHttpRequest.responseJSON.message);
+		}
+	})
+});
+</script>
+</html>

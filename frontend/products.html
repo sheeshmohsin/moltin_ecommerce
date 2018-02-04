@@ -1,11 +1,103 @@
 <html>
 <head>
-	<title>Login/Signup</title>
+	<title>Products</title>
+	<script src="jquery.js"></script>
+	<style type="text/css">
+	.hide{
+		display: none;
+	}
+	.product{
+		border: 1px solid black;
+		padding: 10px;
+	}
+	</style>
+	<script type="text/javascript">
+	if(!localStorage.getItem('email')){
+		window.location = 'index.html';
+	}
+	</script>
 </head>
 <body>
+<p>Hello <span id="user_email"></span>&nbsp;&nbsp;<a href="#" onclick="localStorage.removeItem('email');window.location='index.html'">Logout</a></p>
 <h1>Products</h1>
+<p id="message" style="color:red;"></p>
+<a href="cart.html">Go to Cart</a>
 <div id="products">
-
+	<div class="product hide" id="product-sample" data-id="" data-sku="">
+		<h3 class="name"></h3>
+		<p class="price"></p>
+		<p>Quantity:<input type="number" name="quantity" class="quantity" value="1" max="1" /></p>
+		<button style="background:yellow;" data-id="" class="addtocart">Add to Cart</button>
+	</div>
 </div>
 </body>
+<script type="text/javascript">
+var url = "http://127.0.0.1:8000/";
+
+$("#user_email").html(localStorage.getItem("email"));
+
+function buildUrl(url, endpoint){
+	return url + endpoint;
+}
+
+$(document).ready(function(e){
+	var products_url = buildUrl(url, 'products/');
+	$.ajax({
+		url: products_url,
+		type: "GET",
+		success: function(data){
+			var data_list = data.data;
+			console.log(data_list);
+			for (i=0;i < data_list.length;i++){
+				item = data_list[i];
+				item_name = item.name;
+				item_id = item.id;
+				item_price = parseInt(item.price[0].amount)/100;
+				item_price_currency = item.price[0].currency;
+				item_stock = item.meta.stock.level;
+				item_sku = item.sku;
+				item_description = item.description;
+				var product_sample = $("#product-sample").clone();
+				$(product_sample).removeClass('hide');
+				$(product_sample).attr('data-id', item_id);
+				$(product_sample).attr('data-sku', item_sku);
+				$(product_sample).find(".name").html(item_name);
+				$(product_sample).find(".price").html(item_price_currency + ' ' + String(item_price));
+				$(product_sample).find(".quantity").attr('max', item_stock);
+				$(product_sample).find(".addtocart").attr('data-id', item_id);
+				$("#products").append(product_sample);
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+			$("#message").html(XMLHttpRequest.responseJSON.message);
+		}
+	});
+});
+$(document.body).on('click', '.addtocart', function(){
+	var product_id = $(this).attr('data-id');
+	var quantity = $(this).parent().find('.quantity').val();
+	var addToCartURL = buildUrl(url, 'addtocart/');
+	var postdata = {'product_id': product_id, 'quantity': quantity}
+	$.ajax({
+		url: addToCartURL,
+		type: "POST",
+		dataType: "json",
+		contentType: "application/json; charset=utf-8",
+		data: JSON.stringify(postdata),
+		success: function(data){
+			$("#message").html("Added to Cart");
+			setTimeout(function(){
+				$("#message").html("");
+			}, 3000);
+			// window.location = '/products.html';
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+			// console.log(textStatus);
+			// console.log(errorThrown);
+			// console.log(XMLHttpRequest);
+			$("#message").html(XMLHttpRequest.responseJSON.message);
+		}
+	})
+});
+</script>
 </html>

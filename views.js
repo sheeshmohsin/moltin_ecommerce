@@ -23,6 +23,8 @@ const addToCart = function(req, res, next){
     }
     Moltin.Cart().AddProduct(req.body.product_id, req.body.quantity).then((data) => {
         res.send(data);
+    }, function(reason){
+        console.log(reason);
     });
 }
 
@@ -43,6 +45,8 @@ const removeItemFromCart = function(req, res, next){
     // RemoveItem not working
     Moltin.Cart().UpdateItemQuantity(req.body.item_id, req.body.quantity).then((data) => {
         res.send(data);
+    }, function(reason){
+        console.log(reason);
     })
 }
 
@@ -109,6 +113,7 @@ const payment = function(req, res, next){
     }, function(reason){
         res.send("Payment Successfull");
     });
+    Moltin.Cart().Delete();
 }
 
 module.exports = {
