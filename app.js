@@ -41,6 +41,7 @@ authApi.init(userConfig);
 // app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 app.use(middleware.MoltinAuth);
+app.use(middleware.crossOrigin);
 
 app.use('/', authApi.authRouter);
 
